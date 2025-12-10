@@ -148,7 +148,7 @@ The `Attendance` module exposes the following entry functions:
 
 Below is a verified transaction on the IOTA EVM Explorer, demonstrating a successful `checkIn` execution.
 
-![Transaction Details](https://discord.com/channels/1431166259789041716/1431299562844324001/1448307474904912064)
+![Transaction Details](https://cdn.discordapp.com/attachments/1431299562844324001/1448307474691129344/Screenshot_2025-12-10_202745.png?ex=693ac8f2&is=69397772&hm=9716bc34f5d9f4fd0c5afb1e9e12bbb26352cd82c8ea77e0af1f503bb9f461c4&)
 
 *Transaction Hash: 0x924... verified on IOTA EVM Testnet Explorer.*
 
