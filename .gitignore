@@ -1,0 +1,20 @@
+# Bỏ qua các thư viện nặng
+node_modules/
+
+# Bỏ qua file môi trường chứa mật khẩu (CỰC QUAN TRỌNG)
+.env
+.env.local
+.env.*
+
+# Bỏ qua file build của Hardhat
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+
+# Bỏ qua file build của Next.js
+web/.next/
+web/out/
+web/build/
+
+# Các file hệ thống khác
+.DS_Store

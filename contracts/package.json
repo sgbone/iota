@@ -1,0 +1,23 @@
+{
+  "name": "iota-attendance-contracts",
+  "version": "1.0.0",
+  "description": "Smart Contract for IOTA Attendance",
+  "type": "module",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts --network iotaTestnet",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.5",
+    "ethers": "^6.13.0",
+    "typescript": "^5.5.0",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.14.0",
+    "@types/mocha": "^10.0.6",
+    "@types/chai": "^4.3.16"
+  }
+}
