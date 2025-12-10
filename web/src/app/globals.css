@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Thiết lập màu nền chung cho toàn bộ trang web */
+body {
+  background-color: #f9fafb; /* Màu xám rất nhạt (gray-50) dễ chịu cho mắt */
+  color: #1f2937; /* Màu chữ xám đậm (gray-800) */
+  -webkit-font-smoothing: antialiased; /* Giúp chữ hiển thị sắc nét hơn */
+}

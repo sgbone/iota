@@ -1,4 +1,3 @@
-// Copy mảng "abi" từ file contracts/artifacts/contracts/Attendance.sol/Attendance.json
 export const ATTENDANCE_ABI = [
   {
     anonymous: false,

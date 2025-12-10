@@ -1,14 +1,12 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import {
-  metaMaskWallet,
-  walletConnectWallet,
-  trustWallet,
-  ledgerWallet,
   injectedWallet,
+  walletConnectWallet,
+  metaMaskWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { defineChain } from "viem";
 
-// 1. Cấu hình mạng IOTA EVM Testnet (Chain ID 1076)
+// Cấu hình mạng IOTA EVM Testnet (Chain ID 1076)
 export const iotaTestnet = defineChain({
   id: 1076,
   name: "IOTA EVM Testnet",
@@ -24,30 +22,25 @@ export const iotaTestnet = defineChain({
   },
 });
 
-// 2. Cấu hình RainbowKit với danh sách ví tùy chỉnh
 export const config = getDefaultConfig({
   appName: "IOTA Attendance",
   projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID || "demo",
   chains: [iotaTestnet],
   ssr: true,
-
-  // --- PHẦN MỚI THÊM VÀO ---
+  // Tùy chỉnh danh sách ví hiển thị
   wallets: [
     {
-      groupName: "Phổ biến nhất",
+      groupName: "Ví IOTA Khuyên Dùng",
       wallets: [
-        metaMaskWallet, // Ví MetaMask chuẩn
-        walletConnectWallet, // Dùng cho Firefly Mobile / Desktop
+        // 1. Injected: Tự nhận diện TanglePay (Extension) hoặc MetaMask
+        injectedWallet,
+        // 2. WalletConnect: Dùng cho Firefly Mobile (Quét mã QR)
+        walletConnectWallet,
       ],
     },
     {
-      groupName: "Ví IOTA & Khác",
-      wallets: [
-        // TanglePay sẽ tự động nhận diện qua injectedWallet
-        injectedWallet,
-        trustWallet,
-        ledgerWallet,
-      ],
+      groupName: "Khác",
+      wallets: [metaMaskWallet],
     },
   ],
 });
