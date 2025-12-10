@@ -1,144 +1,126 @@
 "use client";
-
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   useAccount,
-  useReadContract,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ATTENDANCE_ABI } from "../constants/abi";
 
+// Lấy địa chỉ từ file .env
 const CONTRACT_ADDRESS = process.env
   .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
 export default function Home() {
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const [className, setClassName] = useState("");
-  const [sessionIdToCheckIn, setSessionIdToCheckIn] = useState("");
+  const [sessionId, setSessionId] = useState("");
 
-  const {
-    writeContract,
-    data: hash,
-    error: writeError,
-    isPending,
-  } = useWriteContract();
-
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
+    useWaitForTransactionReceipt({ hash });
 
-  // Đọc tổng số session (Ví dụ đơn giản để hiển thị)
-  const { data: nextId } = useReadContract({
-    address: CONTRACT_ADDRESS,
-    abi: ATTENDANCE_ABI,
-    functionName: "nextSessionId",
-    watch: true, // Tự động cập nhật
-  });
-
-  const handleCreateSession = () => {
-    if (!className) return;
-    writeContract({
-      address: CONTRACT_ADDRESS,
-      abi: ATTENDANCE_ABI,
-      functionName: "createSession",
-      args: [className],
-    });
-  };
-
-  const handleCheckIn = () => {
-    if (!sessionIdToCheckIn) return;
-    writeContract({
-      address: CONTRACT_ADDRESS,
-      abi: ATTENDANCE_ABI,
-      functionName: "checkIn",
-      args: [BigInt(sessionIdToCheckIn)],
-    });
-  };
+  useEffect(() => {
+    if (isConfirmed) {
+      alert("Giao dịch thành công!");
+      setClassName("");
+      setSessionId("");
+    }
+  }, [isConfirmed]);
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50 text-gray-900 font-sans">
-      <header className="flex justify-between items-center mb-10">
-        <h1 className="text-2xl font-bold text-teal-600">IOTA Attendance</h1>
-        <ConnectButton />
-      </header>
+    <div className="min-h-screen p-8 bg-gray-100 flex flex-col items-center">
+      <div className="w-full max-w-2xl bg-white rounded-xl shadow p-6">
+        <div className="flex justify-between items-center mb-8 border-b pb-4">
+          <h1 className="text-2xl font-bold text-teal-600">IOTA Điểm Danh</h1>
+          <ConnectButton />
+        </div>
 
-      <main className="max-w-2xl mx-auto space-y-8">
         {!isConnected ? (
-          <div className="text-center p-10 bg-white rounded shadow">
-            <p>Vui lòng kết nối ví để tiếp tục.</p>
-          </div>
+          <p className="text-center py-10 text-gray-500">
+            Vui lòng kết nối ví để sử dụng.
+          </p>
         ) : (
-          <>
-            {/* Khu vực trạng thái giao dịch */}
-            {(isPending || isConfirming) && (
-              <div className="p-4 bg-yellow-100 text-yellow-800 rounded">
-                Đang xử lý giao dịch... Vui lòng đợi.
-              </div>
+          <div className="space-y-8">
+            {/* Trạng thái */}
+            {isPending && (
+              <p className="text-yellow-600 text-center">
+                Đang mở ví... Vui lòng ký xác nhận.
+              </p>
             )}
-            {isConfirmed && (
-              <div className="p-4 bg-green-100 text-green-800 rounded">
-                Giao dịch thành công!
-              </div>
+            {isConfirming && (
+              <p className="text-blue-600 text-center">
+                Đang chờ mạng IOTA xử lý...
+              </p>
             )}
-            {writeError && (
-              <div className="p-4 bg-red-100 text-red-800 rounded">
-                Lỗi: {writeError.message.split("\n")[0]}
-              </div>
+            {error && (
+              <p className="text-red-500 text-center text-sm">
+                {error.message.split("\n")[0]}
+              </p>
             )}
 
-            {/* Dành cho Giáo viên */}
-            <div className="p-6 bg-white rounded-xl shadow border border-gray-100">
-              <h2 className="text-xl font-bold mb-4">Giáo viên: Tạo Lớp</h2>
+            {/* Giáo viên */}
+            <div className="p-4 border border-teal-200 rounded-lg bg-teal-50">
+              <h2 className="font-bold text-lg mb-2 text-teal-800">
+                Giáo viên: Tạo Lớp
+              </h2>
               <div className="flex gap-2">
                 <input
-                  type="text"
-                  placeholder="Tên lớp (VD: Web3 101)"
-                  className="flex-1 p-2 border rounded"
+                  className="flex-1 border p-2 rounded text-black"
+                  placeholder="Tên môn học (VD: Blockchain)"
                   value={className}
                   onChange={(e) => setClassName(e.target.value)}
                 />
                 <button
-                  onClick={handleCreateSession}
                   disabled={isPending}
+                  onClick={() =>
+                    writeContract({
+                      address: CONTRACT_ADDRESS,
+                      abi: ATTENDANCE_ABI,
+                      functionName: "createSession",
+                      args: [className],
+                    })
+                  }
                   className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 disabled:opacity-50"
                 >
-                  Tạo Session
+                  Tạo
                 </button>
               </div>
-              <p className="mt-2 text-sm text-gray-500">
-                Tổng số session hiện tại: {nextId ? nextId.toString() : "0"}
-              </p>
             </div>
 
-            {/* Dành cho Sinh viên */}
-            <div className="p-6 bg-white rounded-xl shadow border border-gray-100">
-              <h2 className="text-xl font-bold mb-4">Sinh viên: Điểm danh</h2>
+            {/* Sinh viên */}
+            <div className="p-4 border border-indigo-200 rounded-lg bg-indigo-50">
+              <h2 className="font-bold text-lg mb-2 text-indigo-800">
+                Sinh viên: Điểm danh
+              </h2>
               <div className="flex gap-2">
                 <input
+                  className="flex-1 border p-2 rounded text-black"
                   type="number"
                   placeholder="ID Session (VD: 0)"
-                  className="flex-1 p-2 border rounded"
-                  value={sessionIdToCheckIn}
-                  onChange={(e) => setSessionIdToCheckIn(e.target.value)}
+                  value={sessionId}
+                  onChange={(e) => setSessionId(e.target.value)}
                 />
                 <button
-                  onClick={handleCheckIn}
                   disabled={isPending}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                  onClick={() =>
+                    writeContract({
+                      address: CONTRACT_ADDRESS,
+                      abi: ATTENDANCE_ABI,
+                      functionName: "checkIn",
+                      args: [BigInt(sessionId || 0)],
+                    })
+                  }
+                  className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-50"
                 >
-                  Điểm danh ngay
+                  Điểm danh
                 </button>
               </div>
-              <p className="mt-2 text-sm text-gray-500">
-                Ví của bạn: {address?.slice(0, 6)}...{address?.slice(-4)}
-              </p>
             </div>
-          </>
+          </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }
