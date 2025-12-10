@@ -1,15 +1,23 @@
-import { ethers } from "hardhat";
+import hre from "hardhat"; // 1. Sửa dòng này: Import toàn bộ đối tượng hardhat
 
 async function main() {
-  console.log("Dang deploy contract len IOTA EVM Testnet...");
+  console.log("---------------------------------------------");
+  console.log("Dang ket noi mang IOTA EVM Testnet...");
 
-  const attendance = await ethers.deployContract("Attendance");
+  // 2. Sửa dòng này: Dùng hre.ethers thay vì ethers đứng một mình
+  const attendance = await hre.ethers.deployContract("Attendance");
+
+  console.log("Dang gui transaction deploy...");
+
   await attendance.waitForDeployment();
 
   const address = await attendance.getAddress();
-  console.log(`Attendance Contract da deploy tai: ${address}`);
 
-  // Lưu ý: Copy địa chỉ này dán vào file cấu hình frontend
+  console.log("---------------------------------------------");
+  console.log("✅ DEPLOY THANH CONG!");
+  console.log(`👉 Dia chi Contract: ${address}`);
+  console.log("---------------------------------------------");
+  console.log("Hay copy dia chi tren vao file .env cua Frontend nhe!");
 }
 
 main().catch((error) => {

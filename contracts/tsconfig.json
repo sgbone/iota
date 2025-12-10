@@ -10,7 +10,7 @@
     "resolveJsonModule": true
   },
   "include": ["./scripts", "./test", "./hardhat.config.ts"],
-  "files": ["./hardhat.config.ts"],
+  "files": ["./hardhat.config.cts"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"

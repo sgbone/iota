@@ -9,7 +9,8 @@ const config: HardhatUserConfig = {
   networks: {
     iotaTestnet: {
       url: "https://json-rpc.evm.testnet.iotaledger.net",
-      chainId: 1075,
+      chainId: 1076,
+      // Nếu không tìm thấy biến môi trường thì dùng mảng rỗng để tránh lỗi crash ban đầu
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       gasPrice: "auto",
     },
